@@ -5,13 +5,13 @@ const LineChart = ({ modelData }) => {
   const [chartData, setChartData] = useState(null); // Start with null to indicate no data
 
   useEffect(() => {
-    if (modelData && modelData.x && modelData.y) {
+    if (modelData && modelData.labels && modelData.values) {
       const data = {
-        labels: modelData.x, // Use model x values as labels
+        labels: modelData.labels, // Use model labels
         datasets: [
           {
             label: 'Dataset 1',
-            data: modelData.y, // Use model y values for the dataset
+            data: modelData.values, // Use model values
             borderColor: 'rgba(75,192,192,1)',
             backgroundColor: 'rgba(75,192,192,0.2)',
           },
@@ -22,9 +22,9 @@ const LineChart = ({ modelData }) => {
   }, [modelData]);
 
   console.log("Received Data: ", modelData);
-  console.log("X Values: ", modelData.x);
-  console.log("Y Values: ", modelData.y);
-  console.log("Chart Data: ", chartData);
+  console.log("Labels: ", modelData.labels);
+  console.log("Values: ", modelData.values);
+  console.log("Chart Data: ", chartData)
 
   // If chartData is null, it means there's no data to display yet
   if (!chartData) {
