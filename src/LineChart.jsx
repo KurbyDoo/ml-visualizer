@@ -29,12 +29,25 @@ const LineChart = ({ modelData }) => {
   console.log("Y Values: ", modelData.y);
   console.log("Chart Data: ", chartData);
 
+  const options = {
+    scales: {
+      x: {
+        type: 'linear', // Set the x-axis to linear
+        position: 'bottom', // Positioning
+      },
+      y: {
+        beginAtZero: true, // Ensure y-axis starts at 0
+      },
+    },
+  };
+
+
   // If chartData is null, it means there's no data to display yet
   if (!chartData) {
     return <p>Loading chart data...</p>;
   }
 
-  return <Line data={chartData} />;
+  return <Line data={chartData} options={options} />;
 };
 
 export default LineChart;
