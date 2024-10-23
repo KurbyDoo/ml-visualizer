@@ -15,7 +15,7 @@ const ModelControl = ({ onRunModel }) => {
         value={inputValue}
         onChange={handleInputChange}
       />
-      <button onClick={() => onRunModel(inputValue)}>Run Model</button>
+      <button onClick={() => onRunModel(parseInt(inputValue, 10))}>Run Model</button>
     </div>
   );
 };

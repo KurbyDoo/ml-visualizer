@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 const LineChart = ({ modelData }) => {
   const [chartData, setChartData] = useState(null); // Start with null to indicate no data
 
   useEffect(() => {
-    if (modelData && modelData.labels && modelData.values) {
+    console.log("Model data was updated...")
+    console.log(modelData, modelData.x, modelData.y)
+    if (modelData && modelData.x.length > 0 && modelData.y.length > 0) {
       const data = {
-        labels: modelData.labels, // Use model labels
+        labels: modelData.x, // Use model x values as labels
         datasets: [
           {
             label: 'Dataset 1',
-            data: modelData.values, // Use model values
+            data: modelData.y, // Use model y values for the dataset
             borderColor: 'rgba(75,192,192,1)',
             backgroundColor: 'rgba(75,192,192,0.2)',
           },
@@ -22,9 +25,9 @@ const LineChart = ({ modelData }) => {
   }, [modelData]);
 
   console.log("Received Data: ", modelData);
-  console.log("Labels: ", modelData.labels);
-  console.log("Values: ", modelData.values);
-  console.log("Chart Data: ", chartData)
+  console.log("X Values: ", modelData.x);
+  console.log("Y Values: ", modelData.y);
+  console.log("Chart Data: ", chartData);
 
   // If chartData is null, it means there's no data to display yet
   if (!chartData) {

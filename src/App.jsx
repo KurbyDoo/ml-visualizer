@@ -1,37 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { useState, useEffect } from 'react';
+import * as tf from '@tensorflow/tfjs';
+import LineChart from './LineChart';
+import ModelControl from './ModelControl';
+import ErrorBoundary from './ErrorBoundry';
 
-const LineChart = ({ modelData }) => {
-  const [chartData, setChartData] = useState(null); // Start with null to indicate no data
+const App = () => {
+  const [predictions, setPredictions] = useState([]);
+  const [data, setData] = useState({ x: [], y: [] });
 
+  const runModel = async (inputValue) => {
+    // Linear regression model setup (simplified)
+    console.log("Model running!");
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+    model.compile({ loss: 'meanSquaredError', optimizer: 'sgd' });
+
+    const xs = tf.tensor2d([1, 2, 3, 4], [4, 1]);
+    const ys = tf.tensor2d([1, 3, 5, 7], [4, 1]);
+
+    await model.fit(xs, ys, { epochs: 100 });
+
+    const predictedValue = model.predict(tf.tensor2d([inputValue], [1, 1])).dataSync();
+    const newData = {
+      x: [1, 2, 3, 4, inputValue],
+      y: [1, 3, 5, 7, predictedValue[0]],
+    };
+
+    setPredictions(predictedValue); // Optional, if you need this state
+    setData(newData);
+
+    console.log("Things: ", inputValue, predictedValue[0]);
+    console.log("Set data to", newData);
+    console.log("Model done");
+  };
+
+  // Log updated data whenever it changes
   useEffect(() => {
-    if (modelData && modelData.x && modelData.y) {
-      const data = {
-        labels: modelData.x, // Use model x values as labels
-        datasets: [
-          {
-            label: 'Dataset 1',
-            data: modelData.y, // Use model y values for the dataset
-            borderColor: 'rgba(75,192,192,1)',
-            backgroundColor: 'rgba(75,192,192,0.2)',
-          },
-        ],
-      };
-      setChartData(data); // Update chart data when modelData changes
-    }
-  }, [modelData]);
+    console.log("Updated data: ", data);
+  }, [data]);
 
-  console.log("Received Data: ", modelData);
-  console.log("X Values: ", modelData.x);
-  console.log("Y Values: ", modelData.y);
-  console.log("Chart Data: ", chartData);
+  console.log("Here!");
 
-  // If chartData is null, it means there's no data to display yet
-  if (!chartData) {
-    return <p>Loading chart data...</p>;
-  }
-
-  return <Line data={chartData} />;
+  return (
+    <div>
+      <h1>Machine Learning Visualizer</h1>
+      <ModelControl onRunModel={runModel} />
+      <ErrorBoundary>
+        <LineChart modelData={data} />
+      </ErrorBoundary>
+    </div>
+  );
 };
 
-export default LineChart;
+export default App;
